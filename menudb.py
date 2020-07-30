@@ -48,6 +48,8 @@ def searchRecipe(es, id, name,vg=-1,exp=-1,dif=-1):
     while(l<len(query_result) and l<5):
         result.append(query_result[l])
         l+=1
+
+    
     return result
     
 
@@ -57,7 +59,21 @@ def confirmRecipe(es, id=0 , recipe="test"):
     detailed_recipe = Marmiton.get( recipe['url'])
     res = es.get(index="users", id=id)
     doc=res["_source"]
-    doc["menuList"].append({"url":detailed_recipe["url"],"name":recipe["name"],"ingredients":detailed_recipe["ingredients"],"step":detailed_recipe['steps']})
+    ingredients=detailed_recipe["ingredients"]
+    for j in range(len(ingredients)):
+        i=0
+        while(1):
+            if ingredients[j][i] in ["1","2","3",'4','5','6','7','8','9','0']:
+                i+=1
+            else:
+                break
+        
+        if i>0:
+            nb=int(ingredients[j][:i])
+            nb=nb/float(detailed_recipe["people_quantity"])
+            ingredients[j] = str(nb)+ingredients[j][i:]     
+            
+    doc["menuList"].append({"url":recipe["url"],"name":recipe["name"],"ingredients":ingredients,"step":detailed_recipe['steps']}) 
     es.index(index="users",id=id,body=doc)
 
 def randomMenu(es,id=0):
@@ -73,3 +89,13 @@ def delMenu(es,id=0,recipe=0):
     res=res['_source']
     res["menuList"].pop(recipe)
     es.index(index="users",id=id,body=doc)
+<<<<<<< HEAD
+=======
+
+def magicButton():
+    l=["champigons farcis","endive au four","soupe de potiron","frite / cordon bleu","pizza","croque monsieur","ravioli","crèpes sucrée","pâtes carbonara","coquiette bolognaise","endive poelée au lardon","pomme de terre farcie","frites steak hache ou omelette","pomme de terre avec oignon carrote et viande au choix a la poele","hachis parmentier","tagliatelle avec escalope a la crème et au champignon","gratin de pomme de terre et choux fleur","tourte","tarte au maroile","flamenkusch","tomate farcie","poulet rôti avec des chips","gâteau salé ","quiche loraine","lasagne","poulet en cocotte avec pomme de terre oignon carotte champignonchoucroute","palette a la diable","potée","riz roulé dans du jambon avec sauce au maroille doré au four","friand et roulé au fromage","tomates farcie","cannelloni ","pâtes fraîche maison","crêpes au fromage","purée poisson panné","frites fricandelle","choux de Bruxelles et côtes de porc","rôti orlophe et pomme de terre ou fritte","moule (ou coque) / frite","hamburger ou kebab fait maison","saucisse lentille","cassoulet","choux rouge au lardons et pomme de terre","fondue","raclette","gauffre","soupe de légumes et beignet de pomme de terre","pancake","croissant au jambon","tournedos avec pomme de terre","cuisse de grenouille pané ","gnocchi maison","blanquette de veau avec son riz","gratin de pâtes","boeuf bourguignon","tripes avec des frites ","pot-au-feu","bouché à la reine","boudin blanc ou noir accompagnement au choix","poêlé de légumes"," gâteau de pomme de terre"]
+    rand=randint(0,len(l)-1)
+    return (searchRecipe(init(),0,l[rand],0,3,4)[0])
+
+print(magicButton())
+>>>>>>> refs/remotes/origin/master
