@@ -1,0 +1,118 @@
+
+<SearchMenu>: 
+    GridLayout:
+        clearcolor : 0,0, 1, 1
+        cols :1
+        Label:
+            text:'recherche'
+        TextInput:
+            on_text:app.text(args[1])
+        Label:
+            text:'vg'
+        CheckBox:
+            active:False
+            on_press: app.vg(args[0])
+        Label:
+            text:'prix'
+        ToggleButton:
+            group:'exp'
+            text:"1"
+            on_press:app.exp_last_pressed(args)
+        ToggleButton:
+            group:'exp'
+            text:"2"
+            on_press:app.exp_last_pressed(args)
+        ToggleButton:
+            group:'exp'
+            text:"3"
+            on_press:app.exp_last_pressed(args)
+        ToggleButton:
+            group:'exp'
+            text:"4"
+            on_press:app.exp_last_pressed(args)
+        Label:
+            text:"difficulte"
+        ToggleButton:
+            group:'dif'
+            text:"1"
+            on_press:app.dif_last_pressed(args)
+        ToggleButton:
+            group:'dif'
+            text:"2"
+            on_press:app.dif_last_pressed(args)
+        ToggleButton:
+            group:'dif'
+            text:"3"
+            on_press:app.dif_last_pressed(args)
+        Button: 
+            text: "Chercher" 
+            background_color : 0, 0, 1, 1 
+            on_press: 
+                app.search(args)
+                # You can define the duration of the change 
+                # and the direction of the slide 
+                root.manager.transition.direction = 'left' 
+                root.manager.transition.duration = 1 
+                
+                
+                
+    
+<ShowResults>: 
+    GridLayout: 
+        cols:3
+        Label:
+            text:'ceci est une image'
+        Label:
+            text:app.current_menu_list[0]["name"]
+        Button: 
+            text: "Ajouter a mes recettes" 
+            background_color : 1, 1, 0, 1 
+            on_press: 
+                root.manager.transition.direction = 'right' 
+                root.manager.transition.duration = 1 
+                root.manager.current = 'searchmenu' 
+        Label:
+            text:'ceci est une image'
+        Label:
+            text:app.current_menu_list[1]["name"]
+        Button: 
+            text: "Ajouter a mes recettes" 
+            background_color : 1, 1, 0, 1 
+            on_press: 
+                root.manager.transition.direction = 'right' 
+                root.manager.transition.duration = 1 
+                root.manager.current = 'searchmenu' 
+        Label:
+            text:'ceci est une image'
+        Label:
+            text:app.current_menu_list[2]["name"]
+        Button: 
+            text: "Ajouter a mes recettes" 
+            background_color : 1, 1, 0, 1 
+            on_press: 
+                root.manager.transition.direction = 'right' 
+                root.manager.transition.duration = 1 
+                root.manager.current = 'searchmenu' 
+        Label:
+            text:'ceci est une image'
+        Label:
+            text:app.current_menu_list[3]["name"]
+        Button: 
+            text: "Ajouter a mes recettes" 
+            background_color : 1, 1, 0, 1 
+            on_press: 
+                root.manager.transition.direction = 'right' 
+                root.manager.transition.duration = 1 
+                root.manager.current = 'searchmenu' 
+        Label:
+            text:'ceci est une image'
+        Button:
+            text:app.current_menu_list[4]["name"]
+        Button: 
+            text: "Ajouter a mes recettes" 
+            background_color : 1, 1, 0, 1 
+            on_press: 
+                root.manager.transition.direction = 'right' 
+                root.manager.transition.duration = 1 
+                root.manager.current = 'searchmenu' 
+  
