@@ -18,6 +18,8 @@ def init():
     return es
 
 def searchRecipe(es, id, name,vg=-1,exp=-1,dif=-1):
+
+    print(str(es)+"\n"+str(id)+"\n"+str(name)+"\n"+str(vg)+"\n"+str(exp)+"\n"+str(dif)+"\n")
     
     res = es.get(index="users", id=0)
     res= res["_source"]
@@ -71,6 +73,3 @@ def delMenu(es,id=0,recipe=0):
     res=res['_source']
     res["menuList"].pop(recipe)
     es.index(index="users",id=id,body=doc)
-
-es=init()
-print(searchRecipe(es,0,"boeuf",0,2,2))
