@@ -5,7 +5,8 @@
 import kivy   
 import menudb
 from client import *
-       
+from kivy.properties import StringProperty
+from marmiton import Marmiton, RecipeNotFound
 # base Class of your App inherits from the App class.     
 # app:always refers to the instance of your application    
 from kivy.app import App  
@@ -35,27 +36,41 @@ class ShowResults(Screen):
     pass
   
    
-# The ScreenManager controls moving between screens 
-screen_manager = ScreenManager() 
-   
-# Add the screens to the manager and then supply a name 
-# that is used to switch screens 
-screen_manager.add_widget(SearchMenu(name ="searchmenu")) 
-screen_manager.add_widget(ShowResults(name ="showresults")) 
+
 
   
 # Create the App class 
 class ScreenApp(App): 
-    
+    current_menu_list=[]
+    current_menu_names4=StringProperty('')
+    current_menu_names3=StringProperty('')
+    current_menu_names2=StringProperty('')
+    current_menu_names1=StringProperty('')
+    current_menu_names0=StringProperty('')
+    image0=StringProperty('')
+    image1=StringProperty('')
+    image2=StringProperty('')
+    image3=StringProperty('')
+    image4=StringProperty('')
+    txtNbPersonnes=StringProperty('Entrez le nombre de personnes')
+    es=menudb.init()
     def build(self): 
+        # The ScreenManager controls moving between screens 
+        Builder.load_file("clement_test.kv") 
+        self.screen_manager = ScreenManager() 
+        
+        # Add the screens to the manager and then supply a name 
+        # that is used to switch screens 
+        self.screen_manager.add_widget(SearchMenu(name ="searchmenu")) 
+        self.screen_manager.add_widget(ShowResults(name ="showresults")) 
         self.user=Client()
         self.vg=False
         self.textsearch='Empty'
-        return screen_manager 
+        return self.screen_manager 
     def text(self,g):
         self.textsearch=g 
-    def vg(self, hh):
-        vg=not(vg) 
+    def veg(self, hh):
+        self.vg=not(self.vg) 
     dif_last_press=3   
     def dif_last_pressed(self, event):
         self.dif_last_press = int(event[0].text)
@@ -70,10 +85,44 @@ class ScreenApp(App):
         menu_list = menudb.searchRecipe(menudb.init(), self.user.get_id(), self.textsearch, vg=self.vg, exp=self.exp_last_press, dif=self.dif_last_press)
         print(menu_list)
         self.current_menu_list=menu_list
+        self.screen_manager.current="showresults"
+        if len(menu_list)==0:
+            while len(self.current_menu_list)<5:
+                self.current_menu_list.append({"image":"","name":"Aucuns résultats","url":""})
+        else:
+            while len(self.current_menu_list)<5:
+                self.current_menu_list.append(self.current_menu_list[-1])
         
-        screen_manager.current="showresults"
-    def getlabel(i):
-        return self.current_menu_list[i]
+        self.current_menu_names4=self.current_menu_list[4]["name"]
+        self.current_menu_names3=self.current_menu_list[3]["name"]
+        self.current_menu_names2=self.current_menu_list[2]["name"]
+        self.current_menu_names1=self.current_menu_list[1]["name"]
+        self.current_menu_names0=self.current_menu_list[0]["name"]
+        
+        self.image0=Marmiton.get(self.current_menu_list[0]["url"])["image"]
+        self.image1=Marmiton.get(self.current_menu_list[1]["url"])["image"]
+        self.image2=Marmiton.get(self.current_menu_list[2]["url"])["image"]
+        self.image3=Marmiton.get(self.current_menu_list[3]["url"])["image"]
+        self.image4=Marmiton.get(self.current_menu_list[4]["url"])["image"]
+
+
+        
+    def confirmRecipe(self,i):
+        menudb.confirmRecipe(self.es, id=self.user.get_id() , recipe=self.current_menu_list[i])
+
+
+
+
+    def getlabel(self, i):
+        return self.current_menu_names[i]["name"]
+    nbPersonnes=4
+    def nbPersonnes(self,txt):
+        try:
+            self.txtNbPersonnes=int(self.nbPersonnes)
+            txtNbPersonnes='Entrez le nombre de personnes'
+        except:
+            txtNbPersonnes='Entrez le nombre de personnes, nombre incorrect !'
+
 # run the app  
 sample_app = ScreenApp() 
 sample_app.run() 
