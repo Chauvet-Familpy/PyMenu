@@ -93,4 +93,3 @@ def magicButton():
     rand=randint(0,len(l)-1)
     return (searchRecipe(init(),0,l[rand],0,3,4)[0])
 
-print(magicButton())
