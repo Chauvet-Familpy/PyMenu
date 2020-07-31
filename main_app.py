@@ -16,6 +16,9 @@ user=Client()
 class MainApp(GridLayout):
     
     def __init__(self, **kwargs):
+        self.sm = ScreenManager()
+        screen = Screen(name='searchMenu')
+        self.sm.add_widget(screen)
         super(MainApp, self).__init__(**kwargs)
         self.clearcolor = (1, 1, 1, 1)
         
@@ -50,21 +53,22 @@ class MainApp(GridLayout):
         self.dif_var=ToggleButton.get_widgets("dif")
         
         self.search_button=Button(text="Recherche")
-        self.search_button.bind(on_press=lambda: self.search)
+        self.search_button.bind(on_press=self.search)
         self.add_widget(self.search_button)
     
     dif_last_press=3   
     def dif_last_pressed(self, event):
-        self.dif_last_press = event.text
+        self.dif_last_press = int(event.text)
         print(self.dif_last_press)
         
     exp_last_press=4   
     def exp_last_pressed(self, event):
-        self.exp_last_press = event.text
+        self.exp_last_press = int(event.text)
         print(self.exp_last_press)
         
     def search(self, hh):
-        menu_list = menudb.searchRecipe(menudb.init(), user.get_id(), self.search_entry.text, vg=int(self.search_veg_checkbox.active), exp=self.exp_last_pressed(), dif=self.dif_last_pressed())
+        print("searching")
+        menu_list = menudb.searchRecipe(menudb.init(), user.get_id(), self.search_entry.text, vg=int(self.search_veg_checkbox.active), exp=self.exp_last_press, dif=self.dif_last_press)
         print(menu_list)
         #research_app.Application(self.search_entry.text, menu_list)
         #self.quit()

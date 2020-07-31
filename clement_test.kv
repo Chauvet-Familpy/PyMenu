@@ -1,0 +1,142 @@
+
+<SearchMenu>: 
+    GridLayout:
+        clearcolor : 0,0, 1, 1
+        cols :1
+        Label:
+            text:'recherche'
+        TextInput:
+            on_text:app.text(args[1])
+        Label:
+            text:'vg'
+        CheckBox:
+            active:False
+            on_press: app.veg(args[0])
+        Label:
+            text:'prix'
+        ToggleButton:
+            group:'exp'
+            text:"1"
+            on_press:app.exp_last_pressed(args)
+        ToggleButton:
+            group:'exp'
+            text:"2"
+            on_press:app.exp_last_pressed(args)
+        ToggleButton:
+            group:'exp'
+            text:"3"
+            on_press:app.exp_last_pressed(args)
+        ToggleButton:
+            group:'exp'
+            text:"4"
+            on_press:app.exp_last_pressed(args)
+        Label:
+            text:"difficulte"
+        ToggleButton:
+            group:'dif'
+            text:"1"
+            on_press:app.dif_last_pressed(args)
+        ToggleButton:
+            group:'dif'
+            text:"2"
+            on_press:app.dif_last_pressed(args)
+        ToggleButton:
+            group:'dif'
+            text:"3"
+            on_press:app.dif_last_pressed(args)
+        Button: 
+            text: "Chercher" 
+            background_color : 0, 0, 1, 1 
+            on_press: 
+                app.search(args)
+                # You can define the duration of the change 
+                # and the direction of the slide 
+                root.manager.transition.direction = 'left' 
+                root.manager.transition.duration = 1 
+                
+        Label:
+            text:'Generer les menus'
+            size:40
+        Label:
+            text:app.txtNbPersonnes
+        TextInput:
+            on_text:app.nbPersonnes(args[1])
+        Label:
+            text:app.txtNbRepas
+        TextInput:
+            on_text:app.nbPersonnes(args[1])
+                
+                
+    
+<ShowResults>: 
+    GridLayout: 
+        cols:3
+        AsyncImage:
+            source:app.image0
+        Label:
+            text:app.current_menu_names0
+        Button: 
+            text: "Ajouter a mes recettes" 
+            background_color : 1, 1, 0, 1 
+            on_press: 
+                root.manager.transition.direction = 'right' 
+                root.manager.transition.duration = 1 
+                root.manager.current = 'searchmenu' 
+                app.confirmRecipe(0)
+        AsyncImage:
+            source:app.image1
+
+        Label:
+            text:app.current_menu_names1
+        Button: 
+            text: "Ajouter a mes recettes" 
+            background_color : 1, 1, 0, 1 
+            on_press: 
+                root.manager.transition.direction = 'right' 
+                root.manager.transition.duration = 1 
+                root.manager.current = 'searchmenu' 
+                app.confirmRecipe(1)
+        AsyncImage:
+            source:app.image2
+        Label:
+            text:app.current_menu_names2
+        Button: 
+            text: "Ajouter a mes recettes" 
+            background_color : 1, 1, 0, 1 
+            on_press: 
+                root.manager.transition.direction = 'right' 
+                root.manager.transition.duration = 1 
+                root.manager.current = 'searchmenu' 
+                app.confirmRecipe(2)
+        AsyncImage:
+            source:app.image3
+        Label:
+            text:app.current_menu_names3
+        Button: 
+            text: "Ajouter a mes recettes" 
+            background_color : 1, 1, 0, 1 
+            on_press: 
+                root.manager.transition.direction = 'right' 
+                root.manager.transition.duration = 1 
+                root.manager.current = 'searchmenu'
+                app.confirmRecipe(3)
+        AsyncImage:
+            source:app.image4
+        Label:
+            text:app.current_menu_names4
+        Button: 
+            text: "Ajouter a mes recettes" 
+            background_color : 1, 1, 0, 1 
+            on_press: 
+                root.manager.transition.direction = 'right' 
+                root.manager.transition.duration = 1 
+                root.manager.current = 'searchmenu' 
+                app.confirmRecipe(4)
+        Button: 
+            text: "Cancel" 
+            background_color : 1, 1, 0, 0
+            on_press: 
+                root.manager.transition.direction = 'right' 
+                root.manager.transition.duration = 1 
+                root.manager.current = 'searchmenu' 
+  
