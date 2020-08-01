@@ -49,21 +49,18 @@ class Recipes(object):
 		html_content = urllib.request.urlopen(url).read()
 		soup = BeautifulSoup(html_content, 'html.parser')
 
-		try:
-			image_url = soup.find("picture").find("img")["src"][7:]
-		except:
-			try:
-				image_url = soup.find("div", {"class": "c-diapo__swiper"}).find("button", {"class": "c-diapo__thumb diapo-slide swiper-slide"}).find("img")["src"].replace("60-50", "622-auto")[7:]
-			except:
-				image_url = ""
+		#image_url = str(soup.find("picture", {"class": "recipe-cover-blur"}).find("img").text)
+		image_url=soup.find("picture", {"class": "recipe-cover-blur"}).find('img')["src"]
 
 		list_ingredients=[]
 		ingredients_data = soup.findAll("span", { "class": "recipe-ingredients-item-label"})
 		for i in ingredients_data:
 			list_ingredients.append(i.text)
 
+		rate = (soup.find("span", {"class": "rating-grade"}).text).replace("\n        ", "")
+
 		try:
-			author = soup.find("div", {"class": "c-article__author no-print author"}).find("b").get_text()
+			author = soup.find("a", {"class": "xXx"}).text
 		except:
 			author = "Inconnu"
 
@@ -79,11 +76,12 @@ class Recipes(object):
 			name="Inconnu"
    
 		data = {
-			"author": author,
+			"url": "http://www.750g.com/"+uri,
 			"image": image_url,
 			"name": name,
 			"ingredients": list_ingredients,
-			"instructions": list_instructions
+			"instructions": list_instructions,
+			"rate": rate
 		}
 
 		return data
