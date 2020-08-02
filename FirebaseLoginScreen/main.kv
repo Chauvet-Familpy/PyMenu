@@ -1,5 +1,27 @@
+#:include FirebaseLoginScreen/firebaseloginscreen.kv
+#:import FirebaseLoginScreen firebaseloginscreen.FirebaseLoginScreen
+#:import utils kivy.utils
+
+#:import Window kivy.core.window.Window
+
+
+FirebaseLoginScreen:
+    
+    web_api_key: "AIzaSyBZzCTOsWVjjVTmCl4d8G6MP2Df0ito4mo"
+    id: firebase_login_screen
+    name: "firebase_login_screen"
+    web_api_key: "AIzaSyBZzCTOsWVjjVTmCl4d8G6MP2Df0ito4mo" # Found in Firebase -> Project Settings -> Web API Key
+    primary_color: utils.get_color_from_hex("#110000")
+    secondary_color: utils.get_color_from_hex("#000011")
+    tertiary_color: 1,1,1,1
+    on_login_success:
+        app.user_localId = self.localId
+        app.user_idToken = self.idToken
+        app.screen_manager.current="searchmenu"
 
 <SearchMenu>: 
+    id:searchmenu
+    name:"searchmenu"
     GridLayout:
         clearcolor : 0,0, 1, 1
         cols :1
@@ -51,22 +73,45 @@
                 app.search(args)
                 # You can define the duration of the change 
                 # and the direction of the slide 
-                root.manager.transition.direction = 'left' 
-                root.manager.transition.duration = 1 
+                app.screen_manager.transition.direction = 'left' 
+                app.screen_manager.transition.duration = 1 
                 
         Label:
             text:'Generer les menus'
-            size:40
+            
         Label:
             text:app.txtNbPersonnes
         TextInput:
-            on_text:app.nbPersonnes(args[1])
+            on_text:app.defnbPersonnes(args[1])
         Label:
             text:app.txtNbRepas
         TextInput:
-            on_text:app.nbPersonnes(args[1])
-                
-                
+            on_text:app.defnbRepas(args[1])
+        Button:
+            text:"Generer les menus"
+            on_press:
+                app.generateMenu()
+                app.screen_manager.current="menuGenerator"
+
+<MenuGenerator>:
+    id:menuGenerator
+    name:"menuGenerator"
+    Scroll
+    ScrollView:
+            id:'svEvents'
+            size_hint:1, None
+            size:Window.width, Window.height
+            GridLayout:
+                id:eventGrid
+                cols:3
+                spacing:10
+                height: self.minimum_height
+                size_hint_y:None
+                Button:
+                    text:"Retour"
+                    on_press:
+                        app.screen_manager.current="searchmenu"
+                            
     
 <ShowResults>: 
     GridLayout: 
@@ -79,9 +124,9 @@
             text: "Ajouter a mes recettes" 
             background_color : 1, 1, 0, 1 
             on_press: 
-                root.manager.transition.direction = 'right' 
-                root.manager.transition.duration = 1 
-                root.manager.current = 'searchmenu' 
+                app.screen_manager.transition.direction = 'right' 
+                app.screen_manager.transition.duration = 1 
+                app.screen_manager.current.current = 'searchmenu' 
                 app.confirmRecipe(0)
         AsyncImage:
             source:app.image1
@@ -92,9 +137,9 @@
             text: "Ajouter a mes recettes" 
             background_color : 1, 1, 0, 1 
             on_press: 
-                root.manager.transition.direction = 'right' 
-                root.manager.transition.duration = 1 
-                root.manager.current = 'searchmenu' 
+                app.screen_manager.transition.direction = 'right' 
+                app.screen_manager.transition.duration = 1 
+                app.screen_manager.current = 'searchmenu' 
                 app.confirmRecipe(1)
         AsyncImage:
             source:app.image2
@@ -104,9 +149,9 @@
             text: "Ajouter a mes recettes" 
             background_color : 1, 1, 0, 1 
             on_press: 
-                root.manager.transition.direction = 'right' 
-                root.manager.transition.duration = 1 
-                root.manager.current = 'searchmenu' 
+                app.screen_manager.transition.direction = 'right' 
+                app.screen_manager.transition.duration = 1 
+                app.screen_manager.current = 'searchmenu' 
                 app.confirmRecipe(2)
         AsyncImage:
             source:app.image3
@@ -116,9 +161,9 @@
             text: "Ajouter a mes recettes" 
             background_color : 1, 1, 0, 1 
             on_press: 
-                root.manager.transition.direction = 'right' 
-                root.manager.transition.duration = 1 
-                root.manager.current = 'searchmenu'
+                app.screen_manager.transition.direction = 'right' 
+                app.screen_manager.transition.duration = 1 
+                app.screen_manager.current = 'searchmenu'
                 app.confirmRecipe(3)
         AsyncImage:
             source:app.image4
@@ -128,15 +173,14 @@
             text: "Ajouter a mes recettes" 
             background_color : 1, 1, 0, 1 
             on_press: 
-                root.manager.transition.direction = 'right' 
-                root.manager.transition.duration = 1 
-                root.manager.current = 'searchmenu' 
+                app.screen_manager.transition.direction = 'right' 
+                app.screen_manager.transition.duration = 1 
+                app.screen_manager.current = 'searchmenu' 
                 app.confirmRecipe(4)
         Button: 
             text: "Cancel" 
             background_color : 1, 1, 0, 0
             on_press: 
-                root.manager.transition.direction = 'right' 
-                root.manager.transition.duration = 1 
-                root.manager.current = 'searchmenu' 
-  
+                app.screen_manager.transition.direction = 'right' 
+                app.screen_manager.transition.duration = 1 
+                app.screen_manager.current = 'searchmenu' 

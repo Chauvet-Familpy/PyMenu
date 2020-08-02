@@ -7,6 +7,7 @@ import menudb
 from client import *
 from kivy.properties import StringProperty
 from marmiton import Marmiton, RecipeNotFound
+from firebaseloginscreen import FirebaseLoginScreen
 # base Class of your App inherits from the App class.     
 # app:always refers to the instance of your application    
 from kivy.app import App  
@@ -25,7 +26,7 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen 
    
 # You can create your kv code in the Python file 
-Builder.load_file("clement_test.kv") 
+
    
 # Create a class for all screens in which you can include 
 # helpful methods specific to that screen 
@@ -34,11 +35,11 @@ class SearchMenu(Screen):
    
 class ShowResults(Screen): 
     pass
-  
-   
+
+class MenuGenerator(Screen):
+    pass
 
 
-  
 # Create the App class 
 class ScreenApp(App): 
     current_menu_list=[]
@@ -53,16 +54,18 @@ class ScreenApp(App):
     image3=StringProperty('')
     image4=StringProperty('')
     txtNbPersonnes=StringProperty('Entrez le nombre de personnes')
+    txtNbRepas=StringProperty('Entrez le nombre de repas')
     es=menudb.init()
     def build(self): 
         # The ScreenManager controls moving between screens 
-        Builder.load_file("clement_test.kv") 
+        Builder.load_file("main.kv") 
         self.screen_manager = ScreenManager() 
-        
-        # Add the screens to the manager and then supply a name 
-        # that is used to switch screens 
+        self.screen_manager.add_widget(FirebaseLoginScreen(name="firebase_login_screen"))
         self.screen_manager.add_widget(SearchMenu(name ="searchmenu")) 
-        self.screen_manager.add_widget(ShowResults(name ="showresults")) 
+        self.screen_manager.add_widget(ShowResults(name ="showresults"))
+        self.screen_manager.add_widget(MenuGenerator(name ="menuGenerator"))
+        self.screen_manager.current="firebase_login_screen"
+
         self.user=Client()
         self.vg=False
         self.textsearch='Empty'
@@ -116,12 +119,23 @@ class ScreenApp(App):
     def getlabel(self, i):
         return self.current_menu_names[i]["name"]
     nbPersonnes=4
-    def nbPersonnes(self,txt):
+    def defnbPersonnes(self,txt):
         try:
-            self.txtNbPersonnes=int(self.nbPersonnes)
-            txtNbPersonnes='Entrez le nombre de personnes'
+            self.nbPersonnes=int(txt)
+            self.txtNbPersonnes='Entrez le nombre de personnes'
         except:
-            txtNbPersonnes='Entrez le nombre de personnes, nombre incorrect !'
+            self.txtNbPersonnes='Entrez le nombre de personnes, nombre incorrect !'
+    nbRepas=1
+    def defnbRepas(self,txt):
+        try:
+            self.nbRepas=int(txt)
+           
+            self.txtNbRepas='Entrez le nombre de repas'
+        except:
+            
+            self.txtNbRepas='Entrez le nombre de repas, nombre incorrect !'
+    def generateMenu(self):
+        pass
 
 # run the app  
 sample_app = ScreenApp() 
