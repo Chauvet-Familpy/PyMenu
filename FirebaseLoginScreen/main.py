@@ -208,7 +208,6 @@ class ScreenApp(App):
         self.nameMenu=[]
         for i in range(self.nbRepas):
             new=GridLayout(cols=3,rows=1,spacing=10)
-            print(self.res)
             j=randint(0,len(self.res["menuList"])-1)
             self.res['menu_created'][-1].append(self.res['menuList'][j])
             l=Label(size_hint=(1,.03), text="repas n°"+str(i+1),size_hint_y=None)
