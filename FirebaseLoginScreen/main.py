@@ -11,6 +11,7 @@ from firebaseloginscreen import FirebaseLoginScreen
 from kivy.uix.button import Button 
 from kivy.uix.label import Label
 from kivy.uix.image import AsyncImage
+from kivy.uix.gridlayout import GridLayout
 # base Class of your App inherits from the App class.     
 # app:always refers to the instance of your application    
 from kivy.app import App  
@@ -61,8 +62,8 @@ class ScreenApp(App):
     txtNbPersonnes=StringProperty('Entrez le nombre de personnes')
     txtNbRepas=StringProperty('Entrez le nombre de repas')
     es=menudb.init()
-    def build(self): 
-        # The ScreenManager controls moving between screens 
+    def build(self):
+        self.es.index(index="users",id=0,body={"menuList":[],"menu_created":[]}) 
         Builder.load_file("main.kv") 
         self.user_localId = -1
         self.screen_manager = ScreenManager() 
@@ -95,7 +96,7 @@ class ScreenApp(App):
         print(self.exp_last_press)
     def search(self, hh):
         print("searching")
-        menu_list = menudb.searchRecipe(menudb.init(), self.user.get_id(), self.textsearch, vg=self.vg, exp=self.exp_last_press, dif=self.dif_last_press)
+        menu_list = menudb.searchRecipe(menudb.init(), self.user.get_id(), self.textsearch,  self.exp_last_press, self.dif_last_press,veg=self.vg)
         print(menu_list)
         self.current_menu_list=menu_list
         self.screen_manager.current="showresults"
@@ -112,11 +113,11 @@ class ScreenApp(App):
         self.current_menu_names1=self.current_menu_list[1]["name"]
         self.current_menu_names0=self.current_menu_list[0]["name"]
         
-        self.image0=Marmiton.get(self.current_menu_list[0]["url"])["image"]
-        self.image1=Marmiton.get(self.current_menu_list[1]["url"])["image"]
-        self.image2=Marmiton.get(self.current_menu_list[2]["url"])["image"]
-        self.image3=Marmiton.get(self.current_menu_list[3]["url"])["image"]
-        self.image4=Marmiton.get(self.current_menu_list[4]["url"])["image"]
+        self.image0=self.current_menu_list[0]["image"]
+        self.image1=self.current_menu_list[1]["image"]
+        self.image2=self.current_menu_list[2]["image"]
+        self.image3=self.current_menu_list[3]["image"]
+        self.image4=self.current_menu_list[4]["image"]
 
 
         
@@ -205,6 +206,7 @@ class ScreenApp(App):
         self.imageMenu=[]
         self.nameMenu=[]
         for i in range(self.nbRepas):
+            new=GridLayout(cols=3,rows=1,spacing=10)
             j=randint(0,len(self.res["menuList"])-1)
             self.res['menu_created'][-1].append(self.res['menuList'][j])
             l=Label(size_hint=(1,.03), text="repas n°"+str(i),size_hint_y=None)
@@ -212,29 +214,24 @@ class ScreenApp(App):
             self.imageMenu.append(self.res["menuList"][j]["image"])
             
             ai=AsyncImage(size_hint=(1/3,.2), source=self.imageMenu[-1],size_hint_y=None)
-            self.box_menu.add_widget(ai)
+            new.add_widget(ai)
+            
             self.nameMenu.append(self.res["menuList"][j]["name"])
             l=Label(size_hint=(1/3,.2), text=self.nameMenu[-1],size_hint_y=None)
-            self.box_menu.add_widget(l)
+            new.add_widget(l)
             btn=Button(size_hint=(1/3,.2), text="modifier repas "+str(i),size_hint_y=None,on_release=self.modifier_menu)
             btn.nb=i
             ai.id="ai_menu"+str(j)
             l.id="l_menu"+str(j)
             btn.recipe=j
-            self.box_menu.add_widget(btn)
+            new.add_widget(btn)
+            self.box_menu.add_widget(new)
             
         print("populated boxlayout")
 
     
 
 
-# run the app 
-query_options = {
-    "aqt": "carottes",  # Query keywords - separated by a white space
-    "exp": 3,                    # Plate price : 1 -> Cheap, 2 -> Medium, 3 -> Kind of expensive (optional)
-    "dif": 3,                    # Recipe difficulty : 1 -> Very easy, 2 -> Easy, 3 -> Medium, 4 -> Advanced (optional)
-    "veg": 0,                    # Vegetarien only : 0 -> False, 1 -> True (optional)
-    }
-print(Marmiton.search(query_options))
+
 sample_app = ScreenApp() 
 sample_app.run() 

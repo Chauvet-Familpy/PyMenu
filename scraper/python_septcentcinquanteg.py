@@ -33,7 +33,7 @@ class Recipes(object):
 			except:
 				ingredients_map.update({i.text: ""})
 
-		rate = (soup.find("span", {"class": "rating-grade"}).text).replace("\n        ", "")
+		rate = 5#(soup.find("span", {"class": "rating-grade"}).text).replace("\n        ", "")
 
 		preparation_data = soup.findAll("div", {"class": "recipe-steps-text"})
 

@@ -17,7 +17,50 @@ def init():
     # Verify that Python can talk to Bonsai (optional):
     return es
 
-def searchRecipe(es, id, name,vg=-1,exp=-1,dif=-1):
+import googlesearch 
+import sys
+sys.path.insert(1, './scraper/')
+from python_marmiton import Marmiton, RecipeNotFound
+from python_septcentcinquanteg import Recipes
+from python_cuisineaz import CuisineAZ
+from python_cuisinejournaldesfemmes import CuisineJournalDesFemmes
+import menudb
+import client
+
+
+def searchRecipe(f, e,arg1,g,h,veg=False):
+    print(arg1)
+    if veg:
+        arg1=arg1+" vegetarien"
+        
+    recette_list=[]
+    var=googlesearch.search("recette"+arg1, tld="co.in", num=20,stop=20, pause=2)
+    for i in var:
+        print(i)
+        if(len(recette_list)>3):
+            break
+            
+        if str(i).startswith("https://www.750g.com/"):
+            recette_list.append(Recipes.get(str(i)))
+            pass
+
+        if str(i).startswith("https://www.cuisineaz.com/recettes/"):
+            recette_list.append(CuisineAZ.get(str(i)))
+            pass
+
+        if str(i).startswith("https://cuisine.journaldesfemmes.fr/recette/"):
+            recette_list.append(CuisineJournalDesFemmes.get(str(i)))
+            pass     
+        
+    #if len(recette_list) < 6:
+        #for i in menudb.searchRecipe(menudb.init(), user, arg1, int(veg), 3, 4):
+            #recette_list.append(i)
+            #if len(recette_list) < 6:
+            #    break
+            
+    return recette_list
+
+def searchMarmiton(es, id, name,vg=-1,exp=-1,dif=-1):
     
     res = es.get(index="users", id=0)
     res= res["_source"]
@@ -53,25 +96,13 @@ def searchRecipe(es, id, name,vg=-1,exp=-1,dif=-1):
 
 
 def confirmRecipe(es, id=0 , recipe="test"):
-    
-    detailed_recipe = Marmiton.get( recipe['url'])
     res = es.get(index="users", id=id)
     doc=res["_source"]
-    ingredients=detailed_recipe["ingredients"]
-    for j in range(len(ingredients)):
-        i=0
-        while(1):
-            if ingredients[j][i] in ["1","2","3",'4','5','6','7','8','9','0']:
-                i+=1
-            else:
-                break
-        
-        if i>0:
-            nb=float(ingredients[j][:i])
-            nb=nb/float(detailed_recipe["people_quantity"])
-            ingredients[j] = str(nb)+ingredients[j][i:]     
-            
-    doc["menuList"].append({"url":recipe["url"],"name":recipe["name"],"ingredients":ingredients,"step":detailed_recipe['steps'],"image":detailed_recipe["image"]}) 
+    for i in range(len(doc["menuList"])):
+        if recipe["url"]==doc["menuList"][i]["url"]:
+            print(doc, "is already added")
+            return
+    doc["menuList"].append({"url":recipe["url"],"name":recipe["name"],"ingredients":recipe['ingredients'],"step":recipe['steps'],"image":recipe["image"]}) 
     print("successfully added",doc)
     es.index(index="users",id=id,body=doc)
 
