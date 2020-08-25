@@ -23,7 +23,6 @@ class Recipes(object):
 			people_data=int(soup.find("span", {"class": "ingredient-variator-label"}).text.split(" ")[0])
 		except:
 			people_data=int(soup.find("h2").text.split("            (")[1].replace(" personnes)", ""))
-			print(people_data)
 
 		ingredients_map={}
 		ingredients_data = soup.findAll("span", { "class": "recipe-ingredients-item-label"})
@@ -61,7 +60,6 @@ class Recipes(object):
 
 		return data
 
-print(Recipes.get("https://www.750g.com/tartelette-a-la-creme-brulee-r63068.htm"))
 
 
 

@@ -63,9 +63,9 @@ class ScreenApp(App):
     txtNbRepas=StringProperty('Entrez le nombre de repas')
     es=menudb.init()
     def build(self):
-        self.es.index(index="users",id=0,body={"menuList":[],"menu_created":[]}) 
         Builder.load_file("main.kv") 
         self.user_localId = -1
+        
         self.screen_manager = ScreenManager() 
         self.screen_manager.add_widget(FirebaseLoginScreen(name="firebase_login_screen"))
         self.screen_manager.add_widget(SearchMenu(name ="searchmenu")) 
@@ -123,6 +123,7 @@ class ScreenApp(App):
         
     def confirmRecipe(self,i):
         menudb.confirmRecipe(self.es, id=self.user.get_id() , recipe=self.current_menu_list[i])
+        
 
 
 
@@ -207,9 +208,10 @@ class ScreenApp(App):
         self.nameMenu=[]
         for i in range(self.nbRepas):
             new=GridLayout(cols=3,rows=1,spacing=10)
+            print(self.res)
             j=randint(0,len(self.res["menuList"])-1)
             self.res['menu_created'][-1].append(self.res['menuList'][j])
-            l=Label(size_hint=(1,.03), text="repas n°"+str(i),size_hint_y=None)
+            l=Label(size_hint=(1,.03), text="repas n°"+str(i+1),size_hint_y=None)
             self.box_menu.add_widget(l)
             self.imageMenu.append(self.res["menuList"][j]["image"])
             
@@ -219,7 +221,7 @@ class ScreenApp(App):
             self.nameMenu.append(self.res["menuList"][j]["name"])
             l=Label(size_hint=(1/3,.2), text=self.nameMenu[-1],size_hint_y=None)
             new.add_widget(l)
-            btn=Button(size_hint=(1/3,.2), text="modifier repas "+str(i),size_hint_y=None,on_release=self.modifier_menu)
+            btn=Button(size_hint=(1/3,.2), text="modifier repas "+str(i+1),size_hint_y=None,on_release=self.modifier_menu)
             btn.nb=i
             ai.id="ai_menu"+str(j)
             l.id="l_menu"+str(j)
