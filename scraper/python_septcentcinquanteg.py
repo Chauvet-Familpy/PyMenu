@@ -19,8 +19,12 @@ class Recipes(object):
 		#image_url = str(soup.find("picture", {"class": "recipe-cover-blur"}).find("img").text)
 		image_url=soup.find("picture", {"class": "recipe-cover-blur"}).find('img')["src"]
 
-		people_data=int(soup.find("span", {"class": "ingredient-variator-label"}).text.split(" ")[0])
-  
+		try:
+			people_data=int(soup.find("span", {"class": "ingredient-variator-label"}).text.split(" ")[0])
+		except:
+			people_data=int(soup.find("h2").text.split("            (")[1].replace(" personnes)", ""))
+			print(people_data)
+
 		ingredients_map={}
 		ingredients_data = soup.findAll("span", { "class": "recipe-ingredients-item-label"})
 		for i in ingredients_data:
@@ -45,7 +49,7 @@ class Recipes(object):
 			name=soup.find("span", {"class":"recipe-title"}).text
 		except:
 			name="Inconnu"
-   
+
 		data = {
 			"url": url,
 			"image": image_url,
@@ -56,6 +60,8 @@ class Recipes(object):
 		}
 
 		return data
+
+print(Recipes.get("https://www.750g.com/tartelette-a-la-creme-brulee-r63068.htm"))
 
 
 
