@@ -41,8 +41,9 @@ def searchRecipe(f, e,arg1,g,h,veg=False):
             break
             
         if str(i).startswith("https://www.750g.com/"):
-            recette_list.append(Recipes.get(str(i)))
-            pass
+            for i in range(10):
+                if not str(i).replace("https://www.750g.com/").find(str(i)):
+                    recette_list.append(Recipes.get(str(i)))
 
         if str(i).startswith("https://www.cuisineaz.com/recettes/"):
             recette_list.append(CuisineAZ.get(str(i)))
