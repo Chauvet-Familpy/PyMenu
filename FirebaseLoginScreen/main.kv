@@ -1,9 +1,8 @@
 #:include FirebaseLoginScreen/firebaseloginscreen.kv
 #:import FirebaseLoginScreen firebaseloginscreen.FirebaseLoginScreen
 #:import utils kivy.utils
-
 #:import Window kivy.core.window.Window
-
+#:import Client client.Client
 
 FirebaseLoginScreen:
     
@@ -18,6 +17,8 @@ FirebaseLoginScreen:
         app.user_localId = self.localId
         app.user_idToken = self.idToken
         app.screen_manager.current="searchmenu"
+        app.user=Client(0)
+        #A MODIFIER
 
 <SearchMenu>: 
     id:searchmenu
@@ -91,28 +92,59 @@ FirebaseLoginScreen:
             text:"Generer les menus"
             on_press:
                 app.generateMenu()
+                app.screen_manager.transition.direction = 'right' 
+                app.screen_manager.transition.duration = 1 
                 app.screen_manager.current="menuGenerator"
+                
 
 <MenuGenerator>:
     id:menuGenerator
     name:"menuGenerator"
-    Scroll
-    ScrollView:
-            id:'svEvents'
+    GridLayout:
+        cols:1
+        rows:2
+        ScrollView:
+            id:sv_menu_generator
             size_hint:1, None
-            size:Window.width, Window.height
-            GridLayout:
-                id:eventGrid
-                cols:3
+            size:Window.width, Window.height*0.9
+            BoxLayout:
+                orientation: 'vertical'
                 spacing:10
+                id:box_menu
                 height: self.minimum_height
                 size_hint_y:None
-                Button:
-                    text:"Retour"
-                    on_press:
-                        app.screen_manager.current="searchmenu"
-                            
-    
+        Button:
+            text:"Retour"
+            on_press:
+                app.screen_manager.current="searchmenu"
+                app.screen_manager.transition.direction = 'left' 
+                app.screen_manager.transition.duration = 1 
+                        
+<ModifyMenu>:
+    GridLayout:
+        id:grid_modify0
+        cols:1
+        rows:3
+        ScrollView:
+            id:sv_menu_generator
+            size_hint:1, None
+            size:Window.width, Window.height*0.9
+            GridLayout:
+                orientation: 'vertical'
+                spacing:10
+                cols:1
+                id:grid_modify
+                height: self.minimum_height
+                size_hint_y:None
+        
+
+
+        Button:
+            text:"Retour"
+            on_press:
+                app.screen_manager.current="menuGenerator"
+                app.screen_manager.transition.direction = 'left' 
+                app.screen_manager.transition.duration = 1 
 <ShowResults>: 
     GridLayout: 
         cols:3
@@ -126,7 +158,7 @@ FirebaseLoginScreen:
             on_press: 
                 app.screen_manager.transition.direction = 'right' 
                 app.screen_manager.transition.duration = 1 
-                app.screen_manager.current.current = 'searchmenu' 
+                app.screen_manager.current = 'searchmenu' 
                 app.confirmRecipe(0)
         AsyncImage:
             source:app.image1
