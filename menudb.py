@@ -18,10 +18,10 @@ def init():
     return es
 
 import googlesearch 
-from python_marmiton import Marmiton, RecipeNotFound
-from python_septcentcinquanteg import Recipes
-from python_cuisineaz import CuisineAZ
-from python_cuisinejournaldesfemmes import CuisineJournalDesFemmes
+from scraper.python_marmiton import Marmiton, RecipeNotFound
+from scraper.python_septcentcinquanteg import Recipes
+from scraper.python_cuisineaz import CuisineAZ
+from scraper.python_cuisinejournaldesfemmes import CuisineJournalDesFemmes
 import menudb
 import client
 

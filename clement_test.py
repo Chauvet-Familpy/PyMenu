@@ -19,7 +19,7 @@ kivy.require('1.9.0')
 # Builder is used when .kv file is 
 # to be used in .py file 
 from kivy.lang import Builder 
-  
+
 # The screen manager is a widget 
 # dedicated to managing multiple screens for your application. 
 from kivy.uix.screenmanager import ScreenManager, Screen 
