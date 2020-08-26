@@ -62,3 +62,5 @@ class Recipes(object):
 		}
 
 		return data
+
+Recipes.get("https://www.750g.com/champignons-a-la-grecque-retour-du-marche-r76244.htm")["image"]
