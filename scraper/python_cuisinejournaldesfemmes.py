@@ -13,7 +13,10 @@ class CuisineJournalDesFemmes(object):
         
         image_url=soup.find("img", {"class": "bu_cuisine_img_noborder photo"})["src"]
         
-        people_data=int(soup.find("span", {"id": "numberPerson"}).text)
+        try:
+            people_data=int(soup.find("span", {"id": "numberPerson"}).text)
+        except:
+            people_data=int(soup.find("span", {"class": "bu_cuisine_title_3 bu_cuisine_title_3--subtitle"}).text.split(" ")[2])
         
         ingredients_map={}
         ingredients_data = soup.findAll("h3", {"class": "app_recipe_ing_title"})
