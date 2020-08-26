@@ -125,17 +125,26 @@ FirebaseLoginScreen:
         id:grid_modify0
         cols:1
         rows:3
+        BoxLayout:
+            orientation:"horizontal"
+            spacing:10
+            TextInput:
+                id:search_modify
+                size_int:0.9,0.1
+            Button:
+                text:"go"
+                on_release:
+                    app.search_in_modify_menu(search_modify.text)
         ScrollView:
-            id:sv_menu_generator
             size_hint:1, None
             size:Window.width, Window.height*0.9
             GridLayout:
-                orientation: 'vertical'
                 spacing:10
                 cols:1
                 id:grid_modify
-                height: self.minimum_height
+                height: self.minimum_height*4
                 size_hint_y:None
+        
         
 
 

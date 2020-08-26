@@ -103,7 +103,6 @@ def confirmRecipe(es, id=0 , recipe="test"):
             print(doc, "is already added")
             return
     doc["menuList"].append({"url":recipe["url"],"name":recipe["name"],"ingredients":recipe['ingredients'],"step":recipe['steps'],"image":recipe["image"]}) 
-    print("successfully added",doc)
     es.index(index="users",id=id,body=doc)
 
 def randomMenu(es,id=0):
