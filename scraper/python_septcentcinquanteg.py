@@ -17,7 +17,10 @@ class Recipes(object):
 		soup = BeautifulSoup(html_content, 'html.parser')
 
 		#image_url = str(soup.find("picture", {"class": "recipe-cover-blur"}).find("img").text)
-		image_url=soup.find("picture", {"class": "recipe-cover-blur"}).find('img')["src"]
+		try:
+			image_url=soup.find("picture", {"class": "recipe-cover-blur"}).find('img')["src"]
+		except:
+			image_url=soup.findAll("img")[61]["data-src"]
 
 		try:
 			people_data=int(soup.find("span", {"class": "ingredient-variator-label"}).text.split(" ")[0])
@@ -59,12 +62,3 @@ class Recipes(object):
 		}
 
 		return data
-
-
-
-
-
-
-
-
-
