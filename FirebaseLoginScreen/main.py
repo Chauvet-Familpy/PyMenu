@@ -45,7 +45,10 @@ class MenuGenerator(Screen):
     pass
 class ModifyMenu(Screen):
     pass
-
+class MesRecettes(Screen):
+    pass
+class MesRecettesDetails(Screen):
+    pass
 # Create the App class 
 class ScreenApp(App): 
     current_menu_list=[]
@@ -62,15 +65,22 @@ class ScreenApp(App):
     txtNbPersonnes=StringProperty('Entrez le nombre de personnes')
     txtNbRepas=StringProperty('Entrez le nombre de repas')
     es=menudb.init()
+    detail1=StringProperty('')
+    detail4=StringProperty('')
+    detail2=StringProperty('')
+    detail3=StringProperty('')
     def build(self):
         Builder.load_file("main.kv") 
         self.user_localId = -1
-        
+    
         self.screen_manager = ScreenManager() 
         self.screen_manager.add_widget(FirebaseLoginScreen(name="firebase_login_screen"))
         self.screen_manager.add_widget(SearchMenu(name ="searchmenu")) 
         self.screen_manager.add_widget(ShowResults(name ="showresults"))
-        
+        self.mes_recettes_detail=MesRecettesDetails(name="mes_recettes_detail")
+        self.screen_manager.add_widget(self.mes_recettes_detail)
+        self.mes_recettes=MesRecettes(name ="mes_recettes")
+        self.screen_manager.add_widget(self.mes_recettes)
         self.modify_menu=ModifyMenu(name ="modifymenu")
         self.screen_manager.add_widget(self.modify_menu)
         self.menu_generator=MenuGenerator(name ="menuGenerator")
@@ -147,10 +157,31 @@ class ScreenApp(App):
             
             self.txtNbRepas='Entrez le nombre de repas, nombre incorrect !'
     def delete_recipe(self,btn):
-        menudb.delMenu(self.es, self.user.get_id(),btn.nb)
+        menudb.delMenu(self.es, self.user.get_id(),self.last_my_recipe_pressed)
+        self.populate_mes_recettes()
 
 
-    def change_recipe(self,btn):
+    def show_details(self,btn):
+        self.screen_manager.current="mes_recettes_detail"
+        self.last_my_recipe_pressed=btn.nb
+        self.detail1=self.res["menuList"][btn.nb]["image"]
+        self.detail2=self.res["menuList"][btn.nb]["name"]
+        self.detail3=str(self.res["menuList"][btn.nb]["ingredients"])
+        self.detail4=str(self.res["menuList"][btn.nb]["step"])
+        
+
+
+    def populate_mes_recettes(self):
+        res=self.es.get(index='users',id=self.user.get_id())
+        self.res=res['_source']
+        grid=self.mes_recettes.ids['my_recipe_grid']
+        grid.clear_widgets()
+        for i in range(len(self.res["menuList"])):
+            btn=Button(text=self.res["menuList"][i]["name"],on_release=self.show_details)
+            btn.nb=i
+            grid.add_widget(btn)
+
+    def change_recipe(self,btn):#Probablement a supprimer
         self.imageMenu[btn.nb]=self.res["menuList"][btn.new_recipe]["image"]
         self.nameMenu[btn.nb]=self.res["menuList"][btn.new_recipe]["name"]
         self.res["menuCreated"][-1][btn.nb]=self.res["menuList"][btn.new_recipe]
@@ -159,41 +190,45 @@ class ScreenApp(App):
         self.box_menu.clear_widgets()
         self.imageMenu=[]
         self.nameMenu=[]
-        for i in range(self.nbRepas):
-            self.res['menu_created'][-1].append(self.res['menuList'][j])
-            l=Label(size_hint=(1,.03), text="repas n°"+str(i),size_hint_y=None)
+        for i in range(len(self.res["menuCreated"][-1])):
+            new=GridLayout(cols=3,rows=1,spacing=10)
+            l=Label(size_hint=(1,.03), text="repas n°"+str(i+1),size_hint_y=None)
             self.box_menu.add_widget(l)
-            self.imageMenu.append(self.res["menu_created"][i]["image"])
+            self.imageMenu.append(self.res["menuCreated"][-1][i]["image"])
             
             ai=AsyncImage(size_hint=(1/3,.2), source=self.imageMenu[-1],size_hint_y=None)
-            self.box_menu.add_widget(ai)
-            self.nameMenu.append(self.res["menu_created"][i]["name"])
+            new.add_widget(ai)
+            
+            self.nameMenu.append(self.res["menuCreated"][-1][i]["name"])
             l=Label(size_hint=(1/3,.2), text=self.nameMenu[-1],size_hint_y=None)
-            self.box_menu.add_widget(l)
-            btn=Button(size_hint=(1/3,.2), text="modifier repas "+str(i),size_hint_y=None,on_release=self.modifier_menu)
+            new.add_widget(l)
+            btn=Button(size_hint=(1/3,.2), text="modifier repas "+str(i+1),size_hint_y=None,on_release=self.modifier_menu)
             btn.nb=i
-            ai.id="ai_menu"+str(j)
-            l.id="l_menu"+str(j)
-            btn.recipe=j
-            self.box_menu.add_widget(btn)
+            ai.id="ai_menu"+str(i)
+            l.id="l_menu"+str(i)
+            btn.recipe=i
+            new.add_widget(btn)
+            self.box_menu.add_widget(new)
+        self.es.index(index="users",id=self.user.get_id(),body=self.res)
             
         print("populated boxlayout")
+        
+
+    
         
 
     def modifier_menu(self,btn):
         self.screen_manager.current="modifymenu"
         box_modify=self.modify_menu.ids["grid_modify"]
-        box_modify0=self.modify_menu.ids["grid_modify0"]
+        box_modify.clear_widgets()
         
-        btn2=Button(text="Supprimer cette recette", on_release=self.delete_recipe) 
-        btn2.nb=btn.recipe
-        box_modify0.add_widget(btn2)
+        
         for i in range(len(self.res["menuList"])):
-            bt=Button(text=self.res["menuList"][i]["name"],on_press=self.change_recipe)
+            bt=Button(text=self.res["menuList"][i]["name"],on_release=self.change_recipe)
             bt.nb=btn.nb
             bt.new_recipe=i
             box_modify.add_widget(bt)
-        
+
 
 
 
@@ -202,14 +237,14 @@ class ScreenApp(App):
         self.box_menu.clear_widgets()
         res=self.es.get(index='users',id=self.user.get_id())
         self.res=res['_source']
-        self.res['menu_created'].append([])
-        #res['menu_created'].append([])
+        self.res['menuCreated'].append([])
+        #res['menuCreated'].append([])
         self.imageMenu=[]
         self.nameMenu=[]
         for i in range(self.nbRepas):
             new=GridLayout(cols=3,rows=1,spacing=10)
             j=randint(0,len(self.res["menuList"])-1)
-            self.res['menu_created'][-1].append(self.res['menuList'][j])
+            self.res['menuCreated'][-1].append(self.res['menuList'][j])
             l=Label(size_hint=(1,.03), text="repas n°"+str(i+1),size_hint_y=None)
             self.box_menu.add_widget(l)
             self.imageMenu.append(self.res["menuList"][j]["image"])
@@ -227,8 +262,26 @@ class ScreenApp(App):
             btn.recipe=j
             new.add_widget(btn)
             self.box_menu.add_widget(new)
-            
+        self.es.index(index="users",id=self.user.get_id(),body=self.res)
         print("populated boxlayout")
+
+    def search_insaved_recipe(self,text):
+        if text=="":
+            self.res=self.es.get(id=self.user.get_id(),index="users")
+            return self.res["_source"]["menuList"]
+        else:
+            query={
+                "query": {
+                    "match": {
+                    "_id": "elasticsearch" 
+                    }
+                }
+            }
+            self.res=self.es.search(index=users,body=query)
+    
+    def search_in_modify_menu(self,text):
+        pass
+
 
     
 

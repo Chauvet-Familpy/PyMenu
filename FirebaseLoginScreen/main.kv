@@ -95,7 +95,97 @@ FirebaseLoginScreen:
                 app.screen_manager.transition.direction = 'right' 
                 app.screen_manager.transition.duration = 1 
                 app.screen_manager.current="menuGenerator"
+        
+        Button:
+            text:"Acceder a mes recettes"
+            on_release:
+                app.screen_manager.current="mes_recettes"
+                app.populate_mes_recettes()
+
+<MesRecettesDetails>:
+    GridLayout:
+        cols:1
+        rows:2
+        ScrollView:
+            size_hint:1, None
+            size:Window.width, Window.height*0.9
+            GridLayout:
+                cols:2
+                rows:2
+                spacing:10
+                id:grid_my_recipe_details
+                height: self.minimum_height
+                size_hint_y: None
+                AsyncImage:
+                    source:app.detail1
+                    
+                Label:
+                    text:app.detail2
+                    size_hint: None, None
+                    text_size:self.texture_size
+
+                Label:
+                    text:app.detail3
+                    size_hint: None, None
+                    text_size:self.texture_size
+
+                Label:
+                    text:app.detail4
+                    size_hint: None, None
+                    text_size:self.texture_size
+
+        GridLayout:
+            cols:2
+            rows:1
+            spacing:10
+            Button:
+                text:"Retour"
+                on_release:
+                    app.screen_manager.current="mes_recettes"
+            Button:
+                text:"Supprimer cette recette"
+                on_release:
+                    app.delete_recipe(self)
+                    app.screen_manager.current="mes_recettes"
+
+
+<MesRecettes>:
+    GridLayout:
+        rows:3
+        cols:1
+        spacing:10
+        GridLayout:
+            rows:1
+            cols:2
+            TextInput:
+                text:""
+            Button:
+                text:"GO"
+        ScrollView:
+            size_hint:1, None
+            size:Window.width, Window.height*0.8
+            GridLayout:
+                cols:1
+                spacing:10
+                id:my_recipe_grid
+                height: self.minimum_height
+                row_default_height: 60
+                size_hint_y: None
+        GridLayout:
+            rows:1
+            cols:3
+            spacing:10
+            Button:
+                text:"Retour"
+                on_release:
+                    app.screen_manager.current="searchmenu"
+            Label:
+                text:""
+            Label:
+                text:""
                 
+
+
 
 <MenuGenerator>:
     id:menuGenerator
@@ -111,7 +201,8 @@ FirebaseLoginScreen:
                 cols:1
                 spacing:10
                 id:box_menu
-                height: self.minimum_height*1.6
+                height: self.minimum_height
+                row_default_height:100
                 size_hint_y:None
         Button:
             text:"Retour"
@@ -125,17 +216,26 @@ FirebaseLoginScreen:
         id:grid_modify0
         cols:1
         rows:3
+        BoxLayout:
+            orientation:"horizontal"
+            spacing:10
+            TextInput:
+                id:search_modify
+                size_int:0.9,0.1
+            Button:
+                text:"go"
+                on_release:
+                    app.search_in_modify_menu(search_modify.text)
         ScrollView:
-            id:sv_menu_generator
             size_hint:1, None
             size:Window.width, Window.height*0.9
             GridLayout:
-                orientation: 'vertical'
                 spacing:10
                 cols:1
                 id:grid_modify
-                height: self.minimum_height
+                height: self.minimum_height*4
                 size_hint_y:None
+        
         
 
 
@@ -210,7 +310,7 @@ FirebaseLoginScreen:
                 app.screen_manager.current = 'searchmenu' 
                 app.confirmRecipe(4)
         Button: 
-            text: "Cancel" 
+            text: "Retour" 
             background_color : 1, 1, 0, 0
             on_press: 
                 app.screen_manager.transition.direction = 'right' 

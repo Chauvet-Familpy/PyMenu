@@ -41,9 +41,10 @@ def searchRecipe(f, e,arg1,g,h,veg=False):
             break
             
         if str(i).startswith("https://www.750g.com/"):
-            for i in range(10):
-                if not str(i).replace("https://www.750g.com/").find(str(i)):
+            for j in range(10):
+                if str(i).replace("https://www.750g.com/","").find(str(j)):
                     recette_list.append(Recipes.get(str(i)))
+                    break
 
         if str(i).startswith("https://www.cuisineaz.com/recettes/"):
             recette_list.append(CuisineAZ.get(str(i)))
@@ -101,10 +102,8 @@ def confirmRecipe(es, id=0 , recipe="test"):
     doc=res["_source"]
     for i in range(len(doc["menuList"])):
         if recipe["url"]==doc["menuList"][i]["url"]:
-            print(doc, "is already added")
             return
     doc["menuList"].append({"url":recipe["url"],"name":recipe["name"],"ingredients":recipe['ingredients'],"step":recipe['steps'],"image":recipe["image"]}) 
-    print("successfully added",doc)
     es.index(index="users",id=id,body=doc)
 
 def randomMenu(es,id=0):
