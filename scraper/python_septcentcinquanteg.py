@@ -12,7 +12,7 @@ class Recipes(object):
 
 	@staticmethod
 	def get(url):
-
+		
 		html_content = urllib.request.urlopen(url).read()
 		soup = BeautifulSoup(html_content, 'html.parser')
 

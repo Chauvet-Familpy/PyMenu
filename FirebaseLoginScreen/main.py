@@ -45,7 +45,10 @@ class MenuGenerator(Screen):
     pass
 class ModifyMenu(Screen):
     pass
-
+class MesRecettes(Screen):
+    pass
+class MesRecettesDetails(Screen):
+    pass
 # Create the App class 
 class ScreenApp(App): 
     current_menu_list=[]
@@ -62,6 +65,10 @@ class ScreenApp(App):
     txtNbPersonnes=StringProperty('Entrez le nombre de personnes')
     txtNbRepas=StringProperty('Entrez le nombre de repas')
     es=menudb.init()
+    detail1=StringProperty('')
+    detail4=StringProperty('')
+    detail2=StringProperty('')
+    detail3=StringProperty('')
     def build(self):
         Builder.load_file("main.kv") 
         self.user_localId = -1
@@ -70,7 +77,10 @@ class ScreenApp(App):
         self.screen_manager.add_widget(FirebaseLoginScreen(name="firebase_login_screen"))
         self.screen_manager.add_widget(SearchMenu(name ="searchmenu")) 
         self.screen_manager.add_widget(ShowResults(name ="showresults"))
-        
+        self.mes_recettes_detail=MesRecettesDetails(name="mes_recettes_detail")
+        self.screen_manager.add_widget(self.mes_recettes_detail)
+        self.mes_recettes=MesRecettes(name ="mes_recettes")
+        self.screen_manager.add_widget(self.mes_recettes)
         self.modify_menu=ModifyMenu(name ="modifymenu")
         self.screen_manager.add_widget(self.modify_menu)
         self.menu_generator=MenuGenerator(name ="menuGenerator")
@@ -147,8 +157,29 @@ class ScreenApp(App):
             
             self.txtNbRepas='Entrez le nombre de repas, nombre incorrect !'
     def delete_recipe(self,btn):
-        menudb.delMenu(self.es, self.user.get_id(),btn.nb)
+        menudb.delMenu(self.es, self.user.get_id(),self.last_my_recipe_pressed)
+        self.populate_mes_recettes()
 
+
+    def show_details(self,btn):
+        self.screen_manager.current="mes_recettes_detail"
+        self.last_my_recipe_pressed=btn.nb
+        self.detail1=self.res["menuList"][btn.nb]["image"]
+        self.detail2=self.res["menuList"][btn.nb]["name"]
+        self.detail3=str(self.res["menuList"][btn.nb]["ingredients"])
+        self.detail4=str(self.res["menuList"][btn.nb]["step"])
+        
+
+
+    def populate_mes_recettes(self):
+        res=self.es.get(index='users',id=self.user.get_id())
+        self.res=res['_source']
+        grid=self.mes_recettes.ids['my_recipe_grid']
+        grid.clear_widgets()
+        for i in range(len(self.res["menuList"])):
+            btn=Button(text=self.res["menuList"][i]["name"],on_release=self.show_details)
+            btn.nb=i
+            grid.add_widget(btn)
 
     def change_recipe(self,btn):#Probablement a supprimer
         self.imageMenu[btn.nb]=self.res["menuList"][btn.new_recipe]["image"]
